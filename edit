@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# INFO: Author: Geordy Jomon
+# A script that copies a file to TMPDIR (or /tmp) for editing
+# and uses fswatch to sync changes when the file is saved on macOS.
+
+if ! command -v fswatch &>/dev/null; then
+  echo "Error: fswatch is not installed. Please install it using 'brew install fswatch'."
+  exit 1
+fi
+
+if [ -z "$1" ]; then
+  printf "Edit files in TMPDIR\nUsage: .%s <file_path>\n\nTMPDIR=%s\n" "$0" "$TMPDIR"
+  exit 1
+fi
+
+file_path="$1"
+new_path="${TMPDIR:-/tmp}/$(basename "${file_path}")"
+
+if ! cp "$file_path" "$new_path"; then
+  echo "Error: Failed to copy the file to the temporary directory."
+  exit 1
+fi
+
+"${EDITOR:-vim}" "$new_path" &
+
+editor_pid=$!
+
+fswatch -o "$new_path" | while read; do
+  if ! cp "$new_path" "$file_path"; then
+    echo "Warning: Failed to sync the file back to the original location."
+  fi
+done &
+
+wait "$editor_pid"
+
+if ! cp "$new_path" "$file_path"; then
+  echo "Error: Failed to copy the final version back to the original location."
+  exit 1
+fi
+
+echo "File edited and synced successfully."

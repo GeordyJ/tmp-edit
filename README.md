@@ -15,6 +15,7 @@ This is useful if you are mounting a filesystem using `sshfs` and you want to ed
 ## Installation and Usage
 
 ```bash
+curl https://raw.githubusercontent.com/GeordyJ/tmp-edit/refs/heads/main/edit >> /path/to/edit
 chmod +x /path/to/edit
 export PATH="$PATH:/path/to/edit"
 

@@ -1,10 +1,10 @@
-# tmp-edit
+# Temp Edit 
 
 ## Description
 
-This script copies a file to the system's temporary directory (`$TMPDIR` or `\tmp`) for editing, helping reduce input lag when editing files on remote mounts (e.g., `sshfs`). After editing, the file is synced back to its original location. This script was designed for MacOS, the script uses `fswatch` to detect changes and automatically sync the file in the background. This allows syncing even while the editor is runing.
+This script copies a file to the system's temporary directory (`$TMPDIR` or `\tmp`) for editing, helping reduce input lag when editing files on remote mounts (e.g., `sshfs`). After editing, the file is synced back to its original location. This script was designed for MacOS, the script uses `fswatch` to detect changes and automatically sync the file in the background. This allows syncing even while the editor is running.
 
-This is useful if you are mounting a filesystem using `sshfs` and you want to edit in your preffered editor, which might allow system wide clipboard, configration etc. The main reason is that as `sshfs` uses `ssh` as backend, it is slow, causing input lags and jitters even in the lightest of editors.
+This is useful if you are mounting a file-system using `sshfs` and you want to edit in your preferred editor, which might allow system wide clipboard, configuration etc. The main reason is that as `sshfs` uses `ssh` as backend, it is slow, causing input lags and jitters even in the lightest of editors.
 
 ## Requirements
 
@@ -15,10 +15,10 @@ This is useful if you are mounting a filesystem using `sshfs` and you want to ed
 ## Installation and Usage
 
 ```bash
-curl https://raw.githubusercontent.com/GeordyJ/tmp-edit/refs/heads/main/edit >> /path/to/edit
+curl https://raw.githubusercontent.com/GeordyJ/tmp-edit/refs/heads/main/tedit >> /path/to/tedit
 chmod +x /path/to/edit
-export PATH="$PATH:/path/to/edit"
+export PATH="$PATH:/path/to/tedit"
 
-edit <file_path> 
-edit /mnt/sshfs/remote_file.txt
+tedit <file_path> 
+tedit /mnt/sshfs/remote_file.txt
 ```

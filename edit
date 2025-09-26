@@ -10,33 +10,33 @@ if ! command -v fswatch &>/dev/null; then
 fi
 
 if [ -z "$1" ]; then
-  printf "Edit files in TMPDIR\nUsage: .%s <file_path>\n\nTMPDIR=%s\n" "$0" "$TMPDIR"
+  printf "Temp edit: Edit files in TMPDIR\nUsage: .%s <file_path>\n\nTMPDIR=%s\n" "$0" "$TMPDIR"
   exit 1
 fi
 
-file_path="$1"
-new_path="${TMPDIR:-/tmp}/$(basename "${file_path}")"
+orginal_file_path="$1"
+temp_file_path="${TMPDIR:-/tmp}/$(basename "${orginal_file_path}")"
 
-if ! cp "$file_path" "$new_path"; then
-  echo "Error: Failed to copy the file to the temporary directory."
+if ! cp "$orginal_file_path" "$temp_file_path"; then
+  printf "Temp Edit:\nError: Failed to copy the file to the temporary directory."
   exit 1
 fi
 
-"${EDITOR:-vim}" "$new_path" &
+"${EDITOR:-vim}" "$temp_file_path" &
 
 editor_pid=$!
 
-fswatch -o "$new_path" | while read; do
-  if ! cp "$new_path" "$file_path"; then
-    echo "Warning: Failed to sync the file back to the original location."
+fswatch -o "$temp_file_path" | while read; do
+  if ! cp "$temp_file_path" "$orginal_file_path"; then
+    printf "Temp Edit:\nWarning: Failed to sync the file back to the original location."
   fi
 done &
 
 wait "$editor_pid"
 
-if ! cp "$new_path" "$file_path"; then
+if ! cp "$temp_file_path" "$orginal_file_path"; then
   echo "Error: Failed to copy the final version back to the original location."
   exit 1
 fi
 
-echo "File edited and synced successfully."
+echo "Temp Edit: File edited and synced successfully."
